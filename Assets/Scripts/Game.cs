@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
+using UnityEngine.SceneManagement;
 
 public class Game : MonoBehaviour
 {
@@ -54,6 +55,8 @@ public class Game : MonoBehaviour
         {
             guessButtons[i].interactable = false;
         }
+
+        SceneManager.LoadScene("NM_GameOver", LoadSceneMode.Additive);
     }
 
     private void MakeGuess()
