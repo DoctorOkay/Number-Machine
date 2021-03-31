@@ -11,7 +11,7 @@ public class Game : MonoBehaviour
     [SerializeField] private int minNumber;
     [SerializeField] private int maxNumber;
     [TextArea(10, 14)] [SerializeField] private string introText;
-    [SerializeField] private Text outputText;
+    [SerializeField] private TextMeshProUGUI outputText;
     [SerializeField] private Button[] guessButtons;
 
     private int guess;
