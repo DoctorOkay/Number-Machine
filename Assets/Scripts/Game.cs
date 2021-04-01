@@ -12,7 +12,6 @@ public class Game : MonoBehaviour
     [SerializeField] private int maxNumber;
     [TextArea(10, 14)] [SerializeField] private string introText;
     [SerializeField] private TextMeshProUGUI outputText;
-    [SerializeField] private Button[] guessButtons;
 
     private int guess;
 
@@ -51,12 +50,6 @@ public class Game : MonoBehaviour
         outputText.text = outputText.text + "Great, I got it right!\n";
         outputText.text = outputText.text + "Game over :)";
 
-        for(int i = 0; i < guessButtons.Length; i++)
-        {
-            guessButtons[i].interactable = false;
-        }
-
-        SceneManager.LoadScene("NM_GameOver", LoadSceneMode.Additive);
     }
 
     private void MakeGuess()
