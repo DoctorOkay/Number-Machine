@@ -10,51 +10,114 @@ public class Game : MonoBehaviour
 {
     [SerializeField] private int minNumber;
     [SerializeField] private int maxNumber;
-    [TextArea(10, 14)] [SerializeField] private string introText;
     [SerializeField] private TextMeshProUGUI outputText;
 
     private int guess;
+    private bool waitingForPlayer;
+    private bool game;
 
+    private Button[] buttons;
+        
     // Start is called before the first frame update
     void Start()
     {
-        outputText.text = introText;
-        outputText.text = outputText.text + "Think of a number between " + minNumber + " and " + maxNumber + "\n";
-        outputText.text = outputText.text + "(Don't tell me what it is)\n";
+        game = true;
+        waitingForPlayer = false;
+        outputText.SetText("");
 
-        MakeGuess();
+        buttons = FindObjectsOfType<Button>();
+
+        StartCoroutine(AnimateText(
+            "|> Welcome to Number Machine\n" +
+            "|> You are going to think of a number and I am going to guess it.\n" +
+            "|> If your number is higher press the \"Higher\" button.\n" +
+            "|> If your number is lower, press the \"Lower\" button\n" +
+            "|> If I get it right, press \"Correct!\"\n" +
+            "|> Ready? Then let's start.\n" +
+            "|> Think of a number between " + minNumber + " and " + maxNumber + "\n" +
+            "|> (Don't tell me what it is)\n"
+            ));
     }
+
+    
 
     // Update is called once per frame
     void Update()
     {
+
  
     }
 
     public void GuessTooHigh()
     {
-        outputText.text = outputText.text + "Ahhh, my guess is too high.\n";
+        waitingForPlayer = false;
         maxNumber = guess;
-        MakeGuess();
+        StartCoroutine(AnimateText("|> Ahhh, my guess is too high.\n"));
+        
     }
 
     public void GuessTooLow()
     {
-        outputText.text = outputText.text + "Hmmm, my guess is too low.\n";
+        waitingForPlayer = false;
         minNumber = guess;
-        MakeGuess();
+        StartCoroutine(AnimateText("|> Hmmm, my guess is too low.\n"));
+        
     }
 
     public void GuessCorrect()
     {
-        outputText.text = outputText.text + "Great, I got it right!\n";
-        outputText.text = outputText.text + "Game over :)";
+        game = false;
+
+        StartCoroutine(AnimateText(
+            "|> Great, I got it right!\n" +
+            "|> Game over, do you want to play again?"
+            ));
 
     }
 
     private void MakeGuess()
     {
         guess = (minNumber + maxNumber) / 2;
-        outputText.text = outputText.text + "I guess your number is: " + guess + "\n";
+        waitingForPlayer = true;
+        StartCoroutine(AnimateText("|> I guess your number is: " + guess + "\n"));
+        
+    }
+
+    private IEnumerator AnimateText(string output)
+    {
+        DisableButtons();
+
+        for (int i = 0; i < output.Length; i++)
+        {
+            outputText.text = outputText.text + output[i];
+            yield return new WaitForSecondsRealtime(0.01f);
+        }
+
+        if (game)
+        {
+            if (!waitingForPlayer)
+            {
+                MakeGuess();
+
+                yield return new WaitForSecondsRealtime(0.7f);
+                EnableButtons();
+            }
+        }
+    }
+
+    private void DisableButtons()
+    {
+        for (int i = 0; i < buttons.Length; i++)
+        {
+            buttons[i].interactable = false;
+        }
+    }
+
+    private void EnableButtons()
+    {
+        for (int i = 0; i < buttons.Length; i++)
+        {
+            buttons[i].interactable = true;
+        }
     }
 }
