@@ -13,54 +13,54 @@ public class Game : MonoBehaviour
     [SerializeField] private TextMeshProUGUI outputText;
 
     private int guess;
+    private int currentMin;
+    private int currentMax;
+    private int guessCount;
+
     private bool waitingForPlayer;
     private bool game;
 
     private Button[] buttons;
         
-    // Start is called before the first frame update
     void Start()
     {
+        outputText.SetText("");
+
+        currentMin = minNumber;
+        currentMax = maxNumber + 1;
+        guessCount = 0;
+
         game = true;
         waitingForPlayer = false;
-        outputText.SetText("");
+        
 
         buttons = FindObjectsOfType<Button>();
 
         StartCoroutine(AnimateText(
-            "|> Welcome to Number Machine\n" +
-            "|> You are going to think of a number and I am going to guess it.\n" +
-            "|> If your number is higher press the \"Higher\" button.\n" +
-            "|> If your number is lower, press the \"Lower\" button\n" +
-            "|> If I get it right, press \"Correct!\"\n" +
-            "|> Ready? Then let's start.\n" +
-            "|> Think of a number between " + minNumber + " and " + maxNumber + "\n" +
-            "|> (Don't tell me what it is)\n"
+            "|> Welcome to Number Machine\n|> " +
+            "You are going to think of a number and I am going to guess it.\n|> " +
+            "If your number is higher press the \"Higher\" button.\n|> " +
+            "If your number is lower, press the \"Lower\" button\n|> " +
+            "If I get it right, press \"Correct!\"\n|> " +
+            "Ready? Then let's start.\n|> " +
+            "Think of a number between " + minNumber + " and " + maxNumber + "\n|> " +
+            "(Don't tell me what it is)\n|> "
             ));
-    }
-
-    
-
-    // Update is called once per frame
-    void Update()
-    {
-
- 
     }
 
     public void GuessTooHigh()
     {
         waitingForPlayer = false;
-        maxNumber = guess;
-        StartCoroutine(AnimateText("|> Ahhh, my guess is too high.\n"));
+        currentMax = guess;
+        StartCoroutine(AnimateText("Ahhh, my guess is too high.\n|> "));
         
     }
 
     public void GuessTooLow()
     {
         waitingForPlayer = false;
-        minNumber = guess;
-        StartCoroutine(AnimateText("|> Hmmm, my guess is too low.\n"));
+        currentMin = guess;
+        StartCoroutine(AnimateText("Hmmm, my guess is too low.\n|> "));
         
     }
 
@@ -69,17 +69,35 @@ public class Game : MonoBehaviour
         game = false;
 
         StartCoroutine(AnimateText(
-            "|> Great, I got it right!\n" +
-            "|> Game over, do you want to play again?"
+            "Great, I got it right!\n|> " +
+            "Game over, do you want to play again?"
             ));
 
     }
 
     private void MakeGuess()
     {
-        guess = (minNumber + maxNumber) / 2;
+        if (guessCount == 0)
+        {
+            // initial guess
+            if (minNumber == 1)
+            {
+                guess = maxNumber / 2;
+            }
+            else
+            {
+                guess = (minNumber + maxNumber) / 2;
+            }
+
+        }
+        else
+        {
+            guess = (currentMax + currentMin) / 2;
+        }
+
         waitingForPlayer = true;
-        StartCoroutine(AnimateText("|> I guess your number is: " + guess + "\n"));
+        StartCoroutine(AnimateText("I guess your number is: " + guess + "\n|> "));
+        guessCount++;
         
     }
 
@@ -102,6 +120,10 @@ public class Game : MonoBehaviour
                 yield return new WaitForSecondsRealtime(0.7f);
                 EnableButtons();
             }
+        }
+        else
+        {
+            SceneManager.LoadScene("NM_GameOver", LoadSceneMode.Additive);
         }
     }
 
