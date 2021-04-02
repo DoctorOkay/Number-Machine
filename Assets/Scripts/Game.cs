@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -11,6 +12,7 @@ public class Game : MonoBehaviour
     [SerializeField] private int minNumber;
     [SerializeField] private int maxNumber;
     [SerializeField] private TextMeshProUGUI outputText;
+    [SerializeField] private AudioSource beep;
 
     private int guess;
     private int currentMin;
@@ -21,10 +23,14 @@ public class Game : MonoBehaviour
     private bool game;
 
     private Button[] buttons;
-        
+
+    private string pattern = "^[a-zA-Z0-9_]*$";
+    private Regex rx;
+
+
     void Start()
     {
-        outputText.SetText("");
+        outputText.text = "";
 
         currentMin = minNumber;
         currentMax = maxNumber + 1;
@@ -32,6 +38,8 @@ public class Game : MonoBehaviour
 
         game = true;
         waitingForPlayer = false;
+
+        rx = new Regex(pattern);
         
 
         buttons = FindObjectsOfType<Button>();
@@ -76,7 +84,7 @@ public class Game : MonoBehaviour
     }
 
     private void MakeGuess()
-    {
+    {            
         if (guessCount == 0)
         {
             // initial guess
@@ -86,13 +94,13 @@ public class Game : MonoBehaviour
             }
             else
             {
-                guess = (minNumber + maxNumber) / 2;
+                guess = UnityEngine.Random.Range(minNumber, maxNumber);
             }
 
         }
         else
         {
-            guess = (currentMax + currentMin) / 2;
+            guess = UnityEngine.Random.Range(currentMin, currentMax);
         }
 
         waitingForPlayer = true;
@@ -107,6 +115,16 @@ public class Game : MonoBehaviour
 
         for (int i = 0; i < output.Length; i++)
         {
+            if (beep.isPlaying)
+            {
+                beep.Stop();
+            }
+
+            if (rx.IsMatch(output[i].ToString()))
+            {
+                beep.Play();
+            }
+            
             outputText.text = outputText.text + output[i];
             yield return new WaitForSecondsRealtime(0.01f);
         }

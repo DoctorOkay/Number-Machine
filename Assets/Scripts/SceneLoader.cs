@@ -11,27 +11,24 @@ public class SceneLoader : MonoBehaviour
     {
         currentScene = SceneManager.GetActiveScene();
         SceneManager.LoadScene("NM_NumberMachine", LoadSceneMode.Single);
-        SceneManager.UnloadSceneAsync(currentScene.buildIndex);
     }
 
-    public void LoadRules()
-    {
-        currentScene = SceneManager.GetActiveScene();
-        SceneManager.LoadScene("NM_Rules", LoadSceneMode.Single);
-        SceneManager.UnloadSceneAsync(currentScene.buildIndex);
-    }
+    //public void LoadRules()
+    //{
+    //    currentScene = SceneManager.GetActiveScene();
+    //    SceneManager.LoadScene("NM_Rules", LoadSceneMode.Single);
+    //    SceneManager.UnloadSceneAsync(currentScene.buildIndex);
+    //}
 
     public void LoadWin()
     {
         currentScene = SceneManager.GetActiveScene();
         SceneManager.LoadScene("NM_GameOver", LoadSceneMode.Additive);
-        // SceneManager.UnloadSceneAsync(currentScene.buildIndex);
     }
 
     public void LoadMenu()
     {
         currentScene = SceneManager.GetActiveScene();
         SceneManager.LoadScene("NM_MainMenu", LoadSceneMode.Single);
-        SceneManager.UnloadSceneAsync(currentScene.buildIndex);
     }
 }
